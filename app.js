@@ -70,18 +70,37 @@ const editstudent = (ele) => {
 
 
 const deletestudent = (ele) => {
-    if (confirm("Are you sure to delete this student?")) {
-        let removeid = ele.closest("tr").id;
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you really want to delete this student?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let removeid = ele.closest("tr").id;
 
-        let getindex = stdarr.findIndex((std) => std.stdid === removeid);
-        stdarr.splice(getindex, 1);
+            let getindex = stdarr.findIndex((std) => std.stdid === removeid);
+            stdarr.splice(getindex, 1);
 
-        ele.closest("tr").remove();
+            ele.closest("tr").remove();
+
+            createstdarr(stdarr);
 
 
-
-        createstdarr(stdarr);
-    }
+            Swal.fire({
+                title: "Deleted!",
+                text: "The student record has been removed.",
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        }
+    });
 };
 
 
@@ -107,23 +126,44 @@ const Toadd = (eve) => {
 const onupdatestudent = (eve) => {
     eve.preventDefault();
 
-    let updated_obj = {
-        fname: fnamecontrols.value,
-        lname: lnamecontrols.value,
-        email: emailcontrols.value,
-        contact: contactcontrols.value,
-        stdid: Editid
-    };
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to update this student’s details?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, update it!",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let updated_obj = {
+                fname: fnamecontrols.value,
+                lname: lnamecontrols.value,
+                email: emailcontrols.value,
+                contact: contactcontrols.value,
+                stdid: Editid
+            };
 
-    let index = stdarr.findIndex(std => std.stdid === Editid);
-    stdarr[index] = updated_obj;
+            let index = stdarr.findIndex(std => std.stdid === Editid);
+            stdarr[index] = updated_obj;
 
-    studentform.reset();
-    addsubmitbtn.classList.remove("d-none");
-    updatebtn.classList.add("d-none");
-    createstdarr(stdarr);
+            studentform.reset();
+            addsubmitbtn.classList.remove("d-none");
+            updatebtn.classList.add("d-none");
+            createstdarr(stdarr);
+
+
+            Swal.fire({
+                title: "Updated!",
+                text: "The student record has been successfully updated.",
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    });
 };
-
-
 studentform.addEventListener("submit", Toadd);
 updatebtn.addEventListener("click", onupdatestudent);
